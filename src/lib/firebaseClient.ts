@@ -8,9 +8,31 @@ const firebaseConfig = {
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
 }
 
-if (!getApps().length) {
-  initializeApp(firebaseConfig)
+let initialized = false
+
+function ensureInitialized() {
+  if (initialized) return
+  if (typeof window === 'undefined') return
+  if (!getApps().length) {
+    initializeApp(firebaseConfig)
+  }
+  initialized = true
 }
 
-export const auth = getAuth()
-export const db = getFirestore()
+export function getClientAuth() {
+  ensureInitialized()
+  try {
+    return typeof window !== 'undefined' ? getAuth() : null
+  } catch (err) {
+    return null
+  }
+}
+
+export function getClientDb() {
+  ensureInitialized()
+  try {
+    return typeof window !== 'undefined' ? getFirestore() : null
+  } catch (err) {
+    return null
+  }
+}

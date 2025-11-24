@@ -16,6 +16,7 @@
     "firebase-admin": "^11.11.0",
     "ioredis": "^5.3.2",
     "next": "^14.0.0",
+    "next-cloudinary": "^6.17.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sib-api-v3-sdk": "^8.2.0",

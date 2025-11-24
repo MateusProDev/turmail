@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../../lib/firebaseClient'
+import { getClientAuth } from '../../lib/firebaseClient'
 
 export default function SignUp() {
   const [email, setEmail] = useState('')
@@ -13,7 +13,9 @@ export default function SignUp() {
     e.preventDefault()
     setError(null)
     try {
-      await createUserWithEmailAndPassword(auth, email, password)
+      const clientAuth = getClientAuth()
+      if (!clientAuth) throw new Error('Firebase not initialized')
+      await createUserWithEmailAndPassword(clientAuth, email, password)
       router.push('/dashboard')
     } catch (err: any) {
       setError(err.message || 'Erro ao criar conta')

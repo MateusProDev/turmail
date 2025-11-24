@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { auth } from '../lib/firebaseClient'
+import { getClientAuth } from '../lib/firebaseClient'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 
 export default function Dashboard() {
@@ -10,7 +10,9 @@ export default function Dashboard() {
   const [message, setMessage] = useState('')
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, u => setUser(u))
+    const clientAuth = getClientAuth()
+    if (!clientAuth) return
+    const unsub = onAuthStateChanged(clientAuth, u => setUser(u))
     return () => unsub()
   }, [])
 
@@ -73,7 +75,15 @@ export default function Dashboard() {
             {user ? (
               <>
                 <span className="mr-3">{user.email}</span>
-                <button className="px-3 py-1 border rounded" onClick={() => signOut(auth)}>Sair</button>
+                <button
+                  className="px-3 py-1 border rounded"
+                  onClick={() => {
+                    const clientAuth = getClientAuth()
+                    if (clientAuth) signOut(clientAuth)
+                  }}
+                >
+                  Sair
+                </button>
               </>
             ) : (
               <a href="/auth/login" className="px-3 py-1 border rounded">Entrar</a>
