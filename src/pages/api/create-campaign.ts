@@ -4,7 +4,11 @@ import { Queue } from 'bullmq'
 import IORedis from 'ioredis'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') return res.status(405).end()
+  if (req.method === 'OPTIONS') return res.status(204).end()
+  if (req.method !== 'POST') {
+    console.warn(`create-campaign: method ${req.method} not allowed`)
+    return res.status(405).json({ error: 'Method not allowed. Use POST.' })
+  }
 
   const authHeader = req.headers.authorization || ''
   const match = authHeader.match(/^Bearer (.+)$/)
@@ -12,6 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const idToken = match[1]
   try {
+    console.log('create-campaign body:', req.body)
     const decoded = await adminAuth.verifyIdToken(idToken)
     const userId = decoded.uid
 

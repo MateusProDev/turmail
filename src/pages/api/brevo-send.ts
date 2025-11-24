@@ -2,7 +2,11 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import SibApiV3Sdk from 'sib-api-v3-sdk'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') return res.status(405).end()
+  if (req.method === 'OPTIONS') return res.status(204).end()
+  if (req.method !== 'POST') {
+    console.warn(`brevo-send: method ${req.method} not allowed`)
+    return res.status(405).json({ error: 'Method not allowed. Use POST.' })
+  }
   const { to, subject, html } = req.body
   if (!to || !subject) return res.status(400).json({ error: 'to and subject required' })
 
@@ -12,6 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const api = new SibApiV3Sdk.TransactionalEmailsApi()
   try {
+    console.log('brevo-send body:', req.body)
     const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail()
     sendSmtpEmail.to = [{ email: to }]
     sendSmtpEmail.subject = subject

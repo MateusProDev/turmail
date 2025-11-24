@@ -2,7 +2,11 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import crypto from 'crypto'
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') return res.status(405).end()
+  if (req.method === 'OPTIONS') return res.status(204).end()
+  if (req.method !== 'POST') {
+    console.warn(`cloudinary-sign: method ${req.method} not allowed`)
+    return res.status(405).json({ error: 'Method not allowed. Use POST.' })
+  }
   const { timestamp, public_id } = req.body
   if (!timestamp) return res.status(400).json({ error: 'timestamp required' })
 
