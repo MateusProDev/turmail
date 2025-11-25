@@ -11,5 +11,7 @@ if (!admin.apps.length) {
   })
 }
 
+// export admin so other modules can access FieldValue and other helpers
+export const adminInstance = admin
 export const adminAuth = admin.auth()
 export const adminDb = admin.firestore()
