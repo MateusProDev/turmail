@@ -12,7 +12,7 @@
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:report": "playwright show-report",
-    "create-test-user": "ts-node scripts/create-test-user.ts"
+    "create-test-user": "node scripts/create-test-user.js"
   },
   "dependencies": {
     "axios": "^1.4.0",
